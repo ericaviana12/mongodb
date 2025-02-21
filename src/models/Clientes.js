@@ -13,11 +13,16 @@ const clienteSchema = new Schema({
     },
     foneCliente: {
         type: String
+    },
+    cpf: {
+        type: String,
+        unique: true,
+        index: true
     }
     
     
 }, {versionKey: false})
 
 //importação do modelo de dados 
-//obs: Clientes será o noime da coleção 
+//obs: Clientes será o noime da coleção (mongodb -> clientes)
 module.exports = model('Clientes', clienteSchema)
