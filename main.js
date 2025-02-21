@@ -30,10 +30,10 @@ const criarCliente = async  (nomeCli, foneCli) => {
     }
 }
 
-// Teste de conexão
+// Teste de conexão e incluir clientes no banco de dados
 const app = async() => {
     await conectar()
-    await criarCliente("Robson Vaamonde", "01234-0000")
+    await criarCliente("José de Assis", "01234-1234")
     await desconectar()
 }
 
