@@ -33,6 +33,7 @@ const criarCliente = async  (nomeCli, foneCli) => {
 // Teste de conexão
 const app = async() => {
     await conectar()
+    await criarCliente("Robson Vaamonde", "01234-0000")
     await desconectar()
 }
 
