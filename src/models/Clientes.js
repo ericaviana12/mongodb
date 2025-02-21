@@ -18,6 +18,10 @@ const clienteSchema = new Schema({
         type: String,
         unique: true,
         index: true
+    },
+    dataCadastro: {
+        type: Date,
+        default: Date.now
     }
     
     

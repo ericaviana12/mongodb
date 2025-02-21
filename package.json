@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ericaviana12/mongodb#readme",
   "dependencies": {
-    "mongoose": "^8.10.1"
+    "mongoose": "^8.10.1",
+    "string-similarity": "^4.0.4"
   }
 }

@@ -9,6 +9,9 @@ const { conectar, desconectar } = require('./database.js')
 //importação do modelo de dados de clientes
 const clienteModel = require('./src/models/Clientes.js')
 
+// Importação do pacote string-similarity para aprimorar a busca por nome
+const stringSimilarity = require('string-similarity')
+
 // CRUD Create (função para adicionar um novo cliente)
 const criarCliente = async (nomeCli, foneCli, cpfCli) => {
 
@@ -36,11 +39,54 @@ const criarCliente = async (nomeCli, foneCli, cpfCli) => {
     }
 }
 
-// Teste de conexão e incluir clientes no banco de dados
+// CRUD Read - Função para listar todos os clientes cadastrados
+const listarClientes = async () => {
+    try {
+        // A linha abaixo lista todos os clientes cadastrados
+        const clientes = await clienteModel.find()
+        console.log(clientes)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// CRUD Read - Função para buscar um cliente específico
+const buscarCliente = async (nome) => {
+    try {
+        // find() -> buscar no banco de dados
+        // nomeCliente: new RegExp(nome) -> filtro pelo nome (parte que contenham (expresão regular))
+        // 'i' -> insensitive (ignorar letras maiúsculas e minúsculas)
+        const cliente = await clienteModel.find(
+            {
+                nomeCliente: new RegExp(nome, "i")
+            }
+        )
+
+        // Calcular a similaridade entre os nomes retornados e o nome pesquisado
+        const nomesClientes = clientes.map(cliente.nomeCliente)
+        const match = stringSimilarity.findBestMatch(nome, nomesClientes)
+
+        // Cliente com melhor similaridade
+        const melhorCliente = cliente.find(cliente => cliente.nomeCliente === match.bestMatch.target)
+        console.log(melhorCliente)
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// Execução da aplicação
 const app = async () => {
     await conectar()
-    await criarCliente("Gustavo Nunes", "01234-1234", "123.456.789-00")
-    await criarCliente("Thiago Moura", "01234-0000", "123.456.789-10")
+    // CRUD - Create
+    // await criarCliente("Erica Viana", "01234-0001", "123.456.789-01")
+
+    // CRUD - Read (Exemplo 1 - listar todos os clientes)
+    // await listarClientes()
+
+    // CRUD - Read (Exemplo 2 - buscar cliente)
+    await buscarCliente("Viana")
+
     await desconectar()
 }
 
