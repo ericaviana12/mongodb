@@ -42,8 +42,12 @@ const criarCliente = async (nomeCli, foneCli, cpfCli) => {
 // CRUD Read - Função para listar todos os clientes cadastrados
 const listarClientes = async () => {
     try {
-        // A linha abaixo lista todos os clientes cadastrados
-        const clientes = await clienteModel.find()
+        // A linha abaixo lista todos os clientes cadastrados por ordem alfabética
+        const clientes = await clienteModel.find().sort(
+            {
+                nomeCliente: 1
+            }
+        )
         console.log(clientes)
     } catch (error) {
         console.log(error)
@@ -63,13 +67,26 @@ const buscarCliente = async (nome) => {
         )
 
         // Calcular a similaridade entre os nomes retornados e o nome pesquisado
-        const nomesClientes = clientes.map(cliente.nomeCliente)
+        const nomesClientes = cliente.map(cliente => cliente.nomeCliente)
         const match = stringSimilarity.findBestMatch(nome, nomesClientes)
 
-        // Cliente com melhor similaridade
-        const melhorCliente = cliente.find(cliente => cliente.nomeCliente === match.bestMatch.target)
-        console.log(melhorCliente)
+        // Validação (se não existir o cliente pesquisado)
+        if (nomesClientes.length === 0) {
+            console.log("Cliente não cadastrado")
+        } else {
+            const match = stringSimilarity.findBestMatch(nome, nomesClientes)
 
+            // Cliente com melhor similaridade
+            const melhorCliente = cliente.find(cliente => cliente.nomeCliente === match.bestMatch.target)
+            // Formatação da data
+            const clienteFormatado = {
+                nomeCliente: melhorCliente.nomeCliente,
+                foneCliente: melhorCliente.foneCliente,
+                cpf: melhorCliente.cpf,
+                dataCadastro: melhorCliente.dataCadastro.toLocaleString('pt-br')
+            }
+            console.log(clienteFormatado)
+        }
     } catch (error) {
         console.log(error)
     }
@@ -79,13 +96,13 @@ const buscarCliente = async (nome) => {
 const app = async () => {
     await conectar()
     // CRUD - Create
-    // await criarCliente("Erica Viana", "01234-0001", "123.456.789-01")
+    // await criarCliente("Wesley Souza", "01234-0006", "123.456.789-06")
 
     // CRUD - Read (Exemplo 1 - listar todos os clientes)
     // await listarClientes()
 
     // CRUD - Read (Exemplo 2 - buscar cliente)
-    await buscarCliente("Viana")
+    await buscarCliente("Wesley")
 
     await desconectar()
 }
